@@ -9,3 +9,6 @@ Manifest.toml
 .vscode/
 .idea/
 docs/build/
+
+# Local logs (do not commit)
+*.log
