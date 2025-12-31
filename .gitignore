@@ -12,3 +12,6 @@ docs/build/
 
 # Local logs (do not commit)
 *.log
+/docs/Manifest.toml
+/docs/*.log
+/docs_build.log
