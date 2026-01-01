@@ -12,11 +12,12 @@ using Random
     @testset "JET" begin
         if VERSION >= v"1.9"
             using JET
-            JET.test_package(T4ATensorTrain; target_defined_modules=true)
+            JET.test_package(T4ATensorTrain; target_modules=(T4ATensorTrain,))
         end
     end
 
     include("test_tensortrain.jl")
     include("test_cachedtensortrain.jl")
     include("test_contraction.jl")
+    include("test_tensor_train_representations.jl")
 end
