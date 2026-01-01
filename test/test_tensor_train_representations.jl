@@ -73,16 +73,51 @@ using Random
     end
     
     @testset "Orthogonality checks" begin
-        # Test isleftorthogonal and isrightorthogonal functions exist and work
-        # Create a simple tensor
-        T = randn(ComplexF64, 2, 3, 4)
+        # Test orthogonality through properly constructed tensor train representations
+        # This follows the pattern from T4AMPOContractions.jl/test/test_contraction.jl
         
-        # These functions should not error
-        @test isa(isleftorthogonal(T), Bool)
-        @test isa(isrightorthogonal(T), Bool)
+        # Generate test data: 4D tensors for MPO-like tensor trains
+        N = 4
+        bonddims = [1, 2, 3, 2, 1]
+        localdims1 = [3, 3, 3, 3]
+        localdims2 = [3, 3, 3, 3]
         
-        # Note: Creating truly orthogonal tensors requires careful construction
-        # which is tested indirectly through tensor train representations
+        a = TensorTrain{ComplexF64,4}([
+            rand(ComplexF64, bonddims[n], localdims1[n], localdims2[n], bonddims[n+1])
+            for n = 1:N
+        ])
+        
+        # Test VidalTensorTrain orthogonality
+        a_v = VidalTensorTrain{ComplexF64, 4}(a)
+        
+        # First site tensor should be left-orthogonal
+        @test isleftorthogonal(sitetensor(a_v, 1))
+        
+        # Middle tensors: contracting with singular values should give orthogonal tensors
+        for i in 2:N-1
+            using T4ATensorTrain: _contract
+            # T_i * S_i should be right-orthogonal
+            @test isrightorthogonal(_contract(sitetensor(a_v, i), singularvalue(a_v, i), (4,), (1,)))
+            # S_{i-1} * T_i should be left-orthogonal
+            @test isleftorthogonal(_contract(singularvalue(a_v, i-1), sitetensor(a_v, i), (2,), (1,)))
+        end
+        
+        # Last site tensor should be right-orthogonal
+        @test isrightorthogonal(sitetensor(a_v, N))
+        
+        # Test InverseTensorTrain orthogonality
+        a_inv = InverseTensorTrain{ComplexF64, 4}(a)
+        
+        for i in 1:N-1
+            using T4ATensorTrain: _contract
+            # T_i * invS_i should be left-orthogonal
+            @test isleftorthogonal(_contract(sitetensor(a_inv, i), inversesingularvalue(a_inv, i), (4,), (1,)))
+        end
+        for i in 2:N
+            using T4ATensorTrain: _contract
+            # invS_{i-1} * T_i should be right-orthogonal
+            @test isrightorthogonal(_contract(inversesingularvalue(a_inv, i-1), sitetensor(a_inv, i), (2,), (1,)))
+        end
     end
     
     @testset "Conversions between representations" begin
