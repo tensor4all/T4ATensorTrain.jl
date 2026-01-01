@@ -93,8 +93,8 @@ function tensortrain(tci)
 end
 
 function _factorize(
-    A::AbstractMatrix{V}, method::Symbol; tolerance::Float64, maxbonddim::Int, leftorthogonal::Bool=false, normalizeerror=true
-)::Tuple{Matrix{V},Matrix{V},Int} where {V}
+    A::AbstractMatrix{V}, method::Symbol; tolerance::Float64, maxbonddim::Int, leftorthogonal::Bool=false, normalizeerror=true, diamond::Bool=false
+)::Union{Tuple{Matrix{V},Matrix{V},Int},Tuple{Matrix{V},Vector{Float64},Matrix{V},Int}} where {V}
     reltol = 1e-14
     abstol = 0.0
     if normalizeerror
@@ -118,7 +118,14 @@ function _factorize(
             replacenothing(findfirst(<(reltol^2), normalized_err), Base.length(normalized_err)),
             maxbonddim
         )
-        if leftorthogonal
+        if diamond
+            return (
+                Matrix(factorization.U[:, 1:trunci]),
+                factorization.S[1:trunci],
+                Matrix(factorization.Vt[1:trunci, :]),
+                trunci
+            )
+        elseif leftorthogonal
             return (
                 factorization.U[:, 1:trunci],
                 Diagonal(factorization.S[1:trunci]) * factorization.Vt[1:trunci, :],

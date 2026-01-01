@@ -15,10 +15,14 @@ include("abstracttensortrain.jl")
 include("tensortrain.jl")
 include("cachedtensortrain.jl")
 include("contraction.jl")
+include("tensor_train_representations.jl")
 
 # Types
 export AbstractTensorTrain
 export TensorTrain
+export VidalTensorTrain
+export InverseTensorTrain
+export SiteTensorTrain
 export TTCache, BatchEvaluator
 export TensorTrainFit
 export Algorithm, @Algorithm_str
@@ -46,6 +50,19 @@ export _contract, _contractsitetensors
 
 # Functions from util.jl
 export projector_to_slice
+
+# Functions from tensor_train_representations.jl
+export isleftorthogonal, isrightorthogonal
+export reshapephysicalleft, reshapephysicalright
+export singularvalues, singularvalue
+export inversesingularvalues, inversesingularvalue
+export partition, center
+export setpartition!, setcenter!
+export settwositetensors!, setsitetensor!
+export movecenterleft!, movecenterright!, movecenterto!
+export movecenterleft, movecenterright
+export centercanonicalize, centercanonicalize!
+export vidaltensortrain, inversetensortrain, sitetensortrain
 
 # Re-export from T4AMatrixCI for convenience
 export rrlu, MatrixLUCI

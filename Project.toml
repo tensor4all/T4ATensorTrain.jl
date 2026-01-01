@@ -1,7 +1,7 @@
 name = "T4ATensorTrain"
 uuid = "ec6ec972-96ae-4a21-b859-3911b77e305f"
-version = "0.1.0"
 authors = ["tensor4all contributors"]
+version = "0.2.0"
 
 [deps]
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
