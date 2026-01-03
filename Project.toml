@@ -1,6 +1,6 @@
 name = "T4ATensorTrain"
 uuid = "ec6ec972-96ae-4a21-b859-3911b77e305f"
-authors = ["tensor4all contributors"]
+authors = ["Simone Foderà <simone.fodera@lmu.de>", "Ritter.Marc <Ritter.Marc@physik.uni-muenchen.de>", "Hiroshi Shinaoka <h.shinaoka@gmail.com> and contributors"]
 version = "0.2.0"
 
 [deps]
